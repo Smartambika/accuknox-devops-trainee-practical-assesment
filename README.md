@@ -1,0 +1,1 @@
+# accuknox-devops-trainee-practical-assesment

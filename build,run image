@@ -1,0 +1,8 @@
+Build the image:
+
+docker build -t wisecow-app 
+
+
+Run the container:
+
+docker run -p 5000:5000 wisecow-app

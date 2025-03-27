@@ -1,0 +1,34 @@
+name: Wisecow CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t your-docker-registry/wisecow-app:latest .
+          docker push your-docker-registry/wisecow-app:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
